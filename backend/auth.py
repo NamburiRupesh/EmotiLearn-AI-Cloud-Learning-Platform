@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, redirect
 from database import get_db_connection
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -67,10 +67,17 @@ def login():
 
     email = data.get("email", "").strip().lower()
     password = data.get("password", "")
+    requested_role = data.get("role")
+    requested_role = requested_role.strip().lower() if isinstance(requested_role, str) else None
 
     if not email or not password:
         return jsonify({
             "message": "Email and password are required."
+        }), 400
+
+    if requested_role and requested_role not in ALLOWED_ROLES:
+        return jsonify({
+            "message": "Invalid portal selected."
         }), 400
 
     connection = get_db_connection()
@@ -83,14 +90,15 @@ def login():
         cursor.close()
         connection.close()
 
-    if (
-        not user
-        or not user.get("password_hash")
-        or not check_password_hash(user["password_hash"], password)
-    ):
+    if not user or not user.get("password_hash") or not check_password_hash(user["password_hash"], password):
         return jsonify({
             "message": "Invalid email or password."
         }), 401
+
+    if requested_role and user["role"] != requested_role:
+        return jsonify({
+            "message": f"This account is registered as a {user['role']}. Please use the {user['role'].title()} portal."
+        }), 403
 
     session.clear()
     session["user_id"] = user["user_id"]
@@ -104,11 +112,7 @@ def login():
     })
 
 
-@auth.route("/logout", methods=["POST"])
+@auth.route("/logout", methods=["GET", "POST"])
 def logout():
     session.clear()
-
-    return jsonify({
-        "message": "Logged out successfully",
-        "redirect": "/login"
-    })
+    return redirect("/login")
