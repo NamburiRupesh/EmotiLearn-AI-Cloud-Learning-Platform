@@ -3,7 +3,7 @@ from flask import Flask, render_template, session, redirect, url_for
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-from auth import auth
+from auth import auth, init_oauth
 
 load_dotenv()
 
@@ -17,6 +17,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-this-secret-key")
 
 CORS(app)
 app.register_blueprint(auth, url_prefix="/auth")
+init_oauth(app)
 
 
 @app.route("/")
