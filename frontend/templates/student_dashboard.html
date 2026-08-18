@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmotiLearn | Student Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="glass-card dashboard-card">
+    <span class="section-label">STUDENT PORTAL</span>
+    <h1>Welcome back, {{ session.get('name', 'Student') }}</h1>
+    <p>Your learning workspace is ready.</p>
+    <div class="dashboard-grid">
+        <div class="feature-card"><h3>My Courses</h3><p>Access enrolled courses and learning materials.</p></div>
+        <div class="feature-card"><h3>Quizzes</h3><p>Attempt assessments and view results.</p></div>
+        <div class="feature-card"><h3>Assignments</h3><p>Track upcoming work and submissions.</p></div>
+        <div class="feature-card"><h3>Attendance</h3><p>View your attendance across courses.</p></div>
+        <div class="feature-card"><h3>Progress</h3><p>Monitor academic performance and progress.</p></div>
+        <div class="feature-card"><h3>Learning Support</h3><p>Emotion-aware recommendations will appear here.</p></div>
+    </div>
+    <form action="/auth/logout" method="post"><button type="submit">Logout</button></form>
+</div>
+</body>
+</html>
