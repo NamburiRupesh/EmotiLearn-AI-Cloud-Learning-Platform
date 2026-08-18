@@ -47,9 +47,7 @@ def dashboard():
 def student_dashboard():
     if session.get("role") != "student":
         return redirect(url_for("login_page"))
-
-    enrolled_courses = []
-    available_courses = []
+    enrolled_courses, available_courses = [], []
     connection = cursor = None
     try:
         connection = get_db_connection()
@@ -157,42 +155,58 @@ def create_course():
 @app.route("/teacher/courses/<int:course_id>/lectures", methods=["GET", "POST"])
 def teacher_lectures(course_id):
     if session.get("role") != "teacher":
-        return jsonify({"message": "Teacher authentication required."}), 403 if request.method == "POST" else redirect(url_for("login_page"))
+        if request.method == "POST":
+            return jsonify({"message": "Teacher authentication required."}), 403
+        return redirect(url_for("login_page"))
+
     connection = cursor = None
     try:
-        connection = get_db_connection(); cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT course_id, course_name, description FROM courses WHERE course_id=%s AND teacher_id=%s", (course_id, session["user_id"]))
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT course_id, course_name, description FROM courses WHERE course_id=%s AND teacher_id=%s",
+            (course_id, session["user_id"]),
+        )
         course = cursor.fetchone()
         if not course:
-            if request.method == "POST": return jsonify({"message": "Course not found or access denied."}), 404
+            if request.method == "POST":
+                return jsonify({"message": "Course not found or access denied."}), 404
             return redirect(url_for("teacher_dashboard"))
+
         if request.method == "POST":
             data = request.get_json(silent=True) or {}
             title = (data.get("title") or "").strip()
             video_url = (data.get("video_url") or "").strip()
             notes_url = (data.get("notes_url") or "").strip()
-            if not title: return jsonify({"message": "Lecture title is required."}), 400
-            cursor.execute("INSERT INTO lectures (course_id,title,video_url,notes_url) VALUES (%s,%s,%s,%s)", (course_id, title, video_url, notes_url))
+            if not title:
+                return jsonify({"message": "Lecture title is required."}), 400
+            cursor.execute(
+                "INSERT INTO lectures (course_id,title,video_url,notes_url) VALUES (%s,%s,%s,%s)",
+                (course_id, title, video_url, notes_url),
+            )
             connection.commit()
             return jsonify({"message": "Lecture added successfully."}), 201
-        cursor.execute("SELECT lecture_id, title, video_url, notes_url FROM lectures WHERE course_id=%s ORDER BY lecture_id DESC", (course_id,))
+
+        cursor.execute(
+            "SELECT lecture_id, title, video_url, notes_url FROM lectures WHERE course_id=%s ORDER BY lecture_id DESC",
+            (course_id,),
+        )
         lectures = cursor.fetchall()
         return render_template("teacher_lectures.html", course=course, lectures=lectures)
     except Exception:
-        if connection and request.method == "POST": connection.rollback()
-        if request.method == "POST": return jsonify({"message": "Unable to save lecture. Check your database connection."}), 500
+        if connection and request.method == "POST":
+            connection.rollback()
+        if request.method == "POST":
+            return jsonify({"message": "Unable to save lecture. Check your database connection."}), 500
         return redirect(url_for("teacher_dashboard"))
     finally:
         if cursor: cursor.close()
         if connection: connection.close()
 
-@app.route("/teacher")
-def _teacher_dashboard_duplicate():
-    return redirect(url_for("teacher_dashboard"))
-
 @app.route("/admin")
 def admin_dashboard():
-    if session.get("role") != "admin": return redirect(url_for("login_page"))
+    if session.get("role") != "admin":
+        return redirect(url_for("login_page"))
     return render_template("admin_dashboard.html")
 
 if __name__ == "__main__":
