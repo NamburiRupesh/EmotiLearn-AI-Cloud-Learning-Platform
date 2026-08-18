@@ -8,58 +8,71 @@
 </head>
 <body>
     <div class="glass-card auth-card">
+        <a href="/" style="text-decoration:none;">← Back to EmotiLearn</a>
         <h1>EmotiLearn</h1>
-        <h2 id="loginTitle">Welcome back</h2>
-        <p id="loginSubtitle">Sign in to continue your learning journey.</p>
 
-        <form id="loginForm">
-            <input id="email" type="email" placeholder="Email Address" required>
-            <input id="password" type="password" placeholder="Password" required>
-            <button type="submit">Sign In</button>
-        </form>
+        <div id="roleChooser">
+            <h2>Choose your portal</h2>
+            <p>Select your account type to continue.</p>
+            <div class="portal-login-options">
+                <a class="feature-card" href="/login?role=student"><h3>Student</h3><p>Access courses, quizzes, assignments and progress.</p><strong>Student Sign In →</strong></a>
+                <a class="feature-card" href="/login?role=teacher"><h3>Teacher</h3><p>Manage courses, assessments, attendance and students.</p><strong>Teacher Sign In →</strong></a>
+                <a class="feature-card" href="/login?role=parent"><h3>Parent</h3><p>View attendance, performance and learning progress.</p><strong>Parent Sign In →</strong></a>
+            </div>
+        </div>
 
-        <p id="message"></p>
-        <p>Don't have an account? <a id="signupLink" href="/signup">Create Account</a></p>
+        <div id="loginPanel" style="display:none;">
+            <h2 id="loginTitle"></h2>
+            <p id="loginSubtitle"></p>
+            <form id="loginForm">
+                <input id="email" type="email" placeholder="Email Address" required>
+                <input id="password" type="password" placeholder="Password" required>
+                <button type="submit">Sign In</button>
+            </form>
+            <p id="message"></p>
+            <p>Don't have an account? <a id="signupLink">Create Account</a></p>
+            <p><a href="/login">← Choose another portal</a></p>
+        </div>
     </div>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const role = params.get("role");
-        const allowedRoles = ["student", "teacher", "parent"];
+<script>
+const params = new URLSearchParams(window.location.search);
+const role = params.get("role");
+const allowedRoles = ["student", "teacher", "parent"];
 
-        if (allowedRoles.includes(role)) {
-            const displayRole = role.charAt(0).toUpperCase() + role.slice(1);
-            document.getElementById("loginTitle").textContent = `${displayRole} Sign In`;
-            document.getElementById("loginSubtitle").textContent = `Sign in to access your ${role} portal.`;
-            document.getElementById("signupLink").href = `/signup?role=${role}`;
+if (allowedRoles.includes(role)) {
+    document.getElementById("roleChooser").style.display = "none";
+    document.getElementById("loginPanel").style.display = "block";
+
+    const displayRole = role.charAt(0).toUpperCase() + role.slice(1);
+    document.getElementById("loginTitle").textContent = `${displayRole} Sign In`;
+    document.getElementById("loginSubtitle").textContent = `Sign in to access your ${role} portal.`;
+    document.getElementById("signupLink").href = `/signup?role=${role}`;
+
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const message = document.getElementById("message");
+        message.textContent = "Signing in...";
+
+        try {
+            const response = await fetch("/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: document.getElementById("email").value,
+                    password: document.getElementById("password").value,
+                    role: role
+                })
+            });
+
+            const data = await response.json();
+            message.textContent = data.message;
+            if (response.ok) window.location.href = data.redirect;
+        } catch (error) {
+            message.textContent = "Unable to connect to the server. Please try again.";
         }
-
-        document.getElementById("loginForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const message = document.getElementById("message");
-            message.textContent = "Signing in...";
-
-            try {
-                const response = await fetch("/auth/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        email: document.getElementById("email").value,
-                        password: document.getElementById("password").value,
-                        role: allowedRoles.includes(role) ? role : null
-                    })
-                });
-
-                const data = await response.json();
-                message.textContent = data.message;
-
-                if (response.ok) {
-                    window.location.href = data.redirect;
-                }
-            } catch (error) {
-                message.textContent = "Unable to connect to the server. Please try again.";
-            }
-        });
-    </script>
+    });
+}
+</script>
 </body>
 </html>
