@@ -9,13 +9,11 @@
 <body>
     <div class="portal-shell" id="roleChooser">
         <a class="portal-back" href="/">← Back to EmotiLearn</a>
-
         <div class="portal-heading">
             <h1>EmotiLearn</h1>
             <h2>Choose your portal</h2>
             <p>Select your account type to continue.</p>
         </div>
-
         <div class="portal-choice-grid">
             <a class="portal-choice" href="/login?role=student">
                 <span class="portal-choice-number">01</span>
@@ -24,21 +22,12 @@
                 <p>Access courses, quizzes, assignments and progress.</p>
                 <strong>Student Sign In →</strong>
             </a>
-
             <a class="portal-choice portal-choice-teacher" href="/login?role=teacher">
                 <span class="portal-choice-number">02</span>
                 <div class="portal-choice-icon">T</div>
                 <h3>Teacher</h3>
                 <p>Manage courses, assessments, attendance and students.</p>
                 <strong>Teacher Sign In →</strong>
-            </a>
-
-            <a class="portal-choice portal-choice-parent" href="/login?role=parent">
-                <span class="portal-choice-number">03</span>
-                <div class="portal-choice-icon">P</div>
-                <h3>Parent</h3>
-                <p>View attendance, performance and learning progress.</p>
-                <strong>Parent Sign In →</strong>
             </a>
         </div>
     </div>
@@ -48,13 +37,11 @@
         <h1>EmotiLearn</h1>
         <h2 id="loginTitle"></h2>
         <p id="loginSubtitle"></p>
-
         <form id="loginForm">
             <input id="email" type="email" placeholder="Email Address" required>
             <input id="password" type="password" placeholder="Password" required>
             <button type="submit" id="loginButton">Sign In</button>
         </form>
-
         <p id="message"></p>
         <p>Don't have an account? <a id="signupLink">Create Account</a></p>
     </div>
@@ -62,12 +49,11 @@
 <script>
 const params = new URLSearchParams(window.location.search);
 const role = params.get("role");
-const allowedRoles = ["student", "teacher", "parent"];
+const allowedRoles = ["student", "teacher"];
 
 if (allowedRoles.includes(role)) {
     document.getElementById("roleChooser").style.display = "none";
     document.getElementById("loginPanel").style.display = "block";
-
     const displayRole = role.charAt(0).toUpperCase() + role.slice(1);
     document.getElementById("loginTitle").textContent = `${displayRole} Sign In`;
     document.getElementById("loginSubtitle").textContent = `Sign in to access your ${role} portal.`;
@@ -78,7 +64,6 @@ if (allowedRoles.includes(role)) {
         event.preventDefault();
         const message = document.getElementById("message");
         message.textContent = "Signing in...";
-
         try {
             const response = await fetch("/auth/login", {
                 method: "POST",
@@ -89,7 +74,6 @@ if (allowedRoles.includes(role)) {
                     role: role
                 })
             });
-
             const data = await response.json();
             message.textContent = data.message;
             if (response.ok) window.location.href = data.redirect;
