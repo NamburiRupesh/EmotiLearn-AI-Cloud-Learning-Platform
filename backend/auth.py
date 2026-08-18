@@ -1,59 +1,74 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from database import get_db_connection
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-auth = Blueprint('auth', __name__)
+auth = Blueprint("auth", __name__)
+ALLOWED_ROLES = {"student", "teacher", "parent"}
 
 
-@auth.route('/signup', methods=['POST'])
+@auth.route("/signup", methods=["POST"])
 def signup():
-    data = request.json
+    data = request.get_json(silent=True) or {}
+    name = data.get("name", "").strip()
+    email = data.get("email", "").strip().lower()
+    password = data.get("password", "")
+    role = data.get("role", "").strip().lower()
 
-    name = data['name']
-    email = data['email']
-    password = generate_password_hash(data['password'])
-    role = data['role']
+    if not name or not email or not password or role not in ALLOWED_ROLES:
+        return jsonify({"message": "Please provide valid name, email, password and role."}), 400
+    if len(password) < 8:
+        return jsonify({"message": "Password must contain at least 8 characters."}), 400
 
     connection = get_db_connection()
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT user_id FROM users WHERE email=%s", (email,))
+        if cursor.fetchone():
+            return jsonify({"message": "An account with this email already exists."}), 409
 
-    cursor.execute(
-        "INSERT INTO users(name,email,password_hash,role) VALUES(%s,%s,%s,%s)",
-        (name,email,password,role)
-    )
+        password_hash = generate_password_hash(password)
+        cursor.execute(
+            "INSERT INTO users(name,email,password_hash,role) VALUES(%s,%s,%s,%s)",
+            (name, email, password_hash, role)
+        )
+        connection.commit()
+        return jsonify({"message": "Account created successfully. Please sign in."}), 201
+    finally:
+        cursor.close()
+        connection.close()
 
-    connection.commit()
-    cursor.close()
-    connection.close()
 
-    return jsonify({'message':'Account created successfully'})
-
-
-@auth.route('/login', methods=['POST'])
+@auth.route("/login", methods=["POST"])
 def login():
-    data=request.json
+    data = request.get_json(silent=True) or {}
+    email = data.get("email", "").strip().lower()
+    password = data.get("password", "")
 
-    email=data['email']
-    password=data['password']
+    if not email or not password:
+        return jsonify({"message": "Email and password are required."}), 400
 
-    connection=get_db_connection()
-    cursor=connection.cursor(dictionary=True)
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+        user = cursor.fetchone()
+    finally:
+        cursor.close()
+        connection.close()
 
-    cursor.execute(
-        "SELECT * FROM users WHERE email=%s",
-        (email,)
-    )
+    if not user or not user.get("password_hash") or not check_password_hash(user["password_hash"], password):
+        return jsonify({"message": "Invalid email or password."}), 401
 
-    user=cursor.fetchone()
+    session.clear()
+    session["user_id"] = user["user_id"]
+    session["name"] = user["name"]
+    session["role"] = user["role"]
 
-    cursor.close()
-    connection.close()
+    return jsonify({"message": "Login successful", "role": user["role"], "redirect": "/dashboard"})
 
-    if user and check_password_hash(user['password_hash'],password):
-        return jsonify({
-            'message':'Login successful',
-            'role':user['role']
-        })
 
-    return jsonify({'message':'Invalid credentials'}),401
+@auth.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"message": "Logged out successfully", "redirect": "/login"})
