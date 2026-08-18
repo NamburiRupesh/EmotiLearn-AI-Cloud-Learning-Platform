@@ -7,47 +7,56 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <div class="glass-card auth-card">
-        <a class="auth-back" href="/">← Back to EmotiLearn</a>
-        <h1>EmotiLearn</h1>
+    <div class="portal-shell" id="roleChooser">
+        <a class="portal-back" href="/">← Back to EmotiLearn</a>
 
-        <div id="roleChooser">
+        <div class="portal-heading">
+            <h1>EmotiLearn</h1>
             <h2>Choose your portal</h2>
             <p>Select your account type to continue.</p>
-            <div class="portal-login-options">
-                <a class="feature-card" href="/login?role=student">
-                    <span class="portal-number">01</span>
-                    <h3>Student</h3>
-                    <p>Access courses, quizzes, assignments and progress.</p>
-                    <strong>Student Sign In →</strong>
-                </a>
-                <a class="feature-card" href="/login?role=teacher">
-                    <span class="portal-number">02</span>
-                    <h3>Teacher</h3>
-                    <p>Manage courses, assessments, attendance and students.</p>
-                    <strong>Teacher Sign In →</strong>
-                </a>
-                <a class="feature-card" href="/login?role=parent">
-                    <span class="portal-number">03</span>
-                    <h3>Parent</h3>
-                    <p>View attendance, performance and learning progress.</p>
-                    <strong>Parent Sign In →</strong>
-                </a>
-            </div>
         </div>
 
-        <div id="loginPanel" style="display:none;">
-            <h2 id="loginTitle"></h2>
-            <p id="loginSubtitle"></p>
-            <form id="loginForm">
-                <input id="email" type="email" placeholder="Email Address" required>
-                <input id="password" type="password" placeholder="Password" required>
-                <button type="submit" id="loginButton">Sign In</button>
-            </form>
-            <p id="message"></p>
-            <p>Don't have an account? <a id="signupLink">Create Account</a></p>
-            <p><a href="/login">← Choose another portal</a></p>
+        <div class="portal-choice-grid">
+            <a class="portal-choice" href="/login?role=student">
+                <span class="portal-choice-number">01</span>
+                <div class="portal-choice-icon">S</div>
+                <h3>Student</h3>
+                <p>Access courses, quizzes, assignments and progress.</p>
+                <strong>Student Sign In →</strong>
+            </a>
+
+            <a class="portal-choice portal-choice-teacher" href="/login?role=teacher">
+                <span class="portal-choice-number">02</span>
+                <div class="portal-choice-icon">T</div>
+                <h3>Teacher</h3>
+                <p>Manage courses, assessments, attendance and students.</p>
+                <strong>Teacher Sign In →</strong>
+            </a>
+
+            <a class="portal-choice portal-choice-parent" href="/login?role=parent">
+                <span class="portal-choice-number">03</span>
+                <div class="portal-choice-icon">P</div>
+                <h3>Parent</h3>
+                <p>View attendance, performance and learning progress.</p>
+                <strong>Parent Sign In →</strong>
+            </a>
         </div>
+    </div>
+
+    <div class="glass-card auth-card" id="loginPanel" style="display:none;">
+        <a class="auth-back" href="/login">← Choose another portal</a>
+        <h1>EmotiLearn</h1>
+        <h2 id="loginTitle"></h2>
+        <p id="loginSubtitle"></p>
+
+        <form id="loginForm">
+            <input id="email" type="email" placeholder="Email Address" required>
+            <input id="password" type="password" placeholder="Password" required>
+            <button type="submit" id="loginButton">Sign In</button>
+        </form>
+
+        <p id="message"></p>
+        <p>Don't have an account? <a id="signupLink">Create Account</a></p>
     </div>
 
 <script>
