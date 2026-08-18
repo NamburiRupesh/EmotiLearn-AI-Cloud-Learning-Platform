@@ -18,9 +18,6 @@
             <button type="submit">Sign In</button>
         </form>
 
-        <div class="divider"><span>OR</span></div>
-        <button type="button" class="google-btn" onclick="googleLogin()">Continue with Google</button>
-
         <p id="message"></p>
         <p>Don't have an account? <a href="/signup">Create Account</a></p>
     </div>
@@ -31,23 +28,26 @@
             const message = document.getElementById("message");
             message.textContent = "Signing in...";
 
-            const response = await fetch("/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: document.getElementById("email").value,
-                    password: document.getElementById("password").value
-                })
-            });
+            try {
+                const response = await fetch("/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: document.getElementById("email").value,
+                        password: document.getElementById("password").value
+                    })
+                });
 
-            const data = await response.json();
-            message.textContent = data.message;
-            if (response.ok) window.location.href = data.redirect;
+                const data = await response.json();
+                message.textContent = data.message;
+
+                if (response.ok) {
+                    window.location.href = data.redirect;
+                }
+            } catch (error) {
+                message.textContent = "Unable to connect to the server. Please try again.";
+            }
         });
-
-        function googleLogin() {
-            window.location.href = "/auth/google";
-        }
     </script>
 </body>
 </html>
