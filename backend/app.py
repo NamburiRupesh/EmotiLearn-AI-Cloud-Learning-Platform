@@ -38,9 +38,10 @@ def dashboard():
         return redirect(url_for("student_dashboard"))
     if role == "teacher":
         return redirect(url_for("teacher_dashboard"))
-    if role == "parent":
-        return redirect(url_for("parent_dashboard"))
-    return redirect(url_for("admin_dashboard"))
+    if role == "admin":
+        return redirect(url_for("admin_dashboard"))
+    session.clear()
+    return redirect(url_for("login_page"))
 
 @app.route("/student")
 def student_dashboard():
@@ -92,11 +93,7 @@ def student_dashboard():
         if connection:
             connection.close()
 
-    return render_template(
-        "student_dashboard.html",
-        enrolled_courses=enrolled_courses,
-        available_courses=available_courses,
-    )
+    return render_template("student_dashboard.html", enrolled_courses=enrolled_courses, available_courses=available_courses)
 
 @app.route("/student/courses/<int:course_id>/join", methods=["POST"])
 def join_course(course_id):
@@ -113,17 +110,11 @@ def join_course(course_id):
         if not cursor.fetchone():
             return jsonify({"message": "Course not found."}), 404
 
-        cursor.execute(
-            "SELECT enrollment_id FROM enrollments WHERE student_id=%s AND course_id=%s",
-            (student_id, course_id),
-        )
+        cursor.execute("SELECT enrollment_id FROM enrollments WHERE student_id=%s AND course_id=%s", (student_id, course_id))
         if cursor.fetchone():
             return jsonify({"message": "You are already enrolled in this course."}), 409
 
-        cursor.execute(
-            "INSERT INTO enrollments (student_id, course_id) VALUES (%s, %s)",
-            (student_id, course_id),
-        )
+        cursor.execute("INSERT INTO enrollments (student_id, course_id) VALUES (%s, %s)", (student_id, course_id))
         connection.commit()
         return jsonify({"message": "Course joined successfully."}), 201
     except Exception:
@@ -160,10 +151,7 @@ def teacher_dashboard():
             cursor.execute(sql, (teacher_id,))
             stats[key] = cursor.fetchone()["total"]
 
-        cursor.execute(
-            "SELECT course_id, course_name, description, created_at FROM courses WHERE teacher_id=%s ORDER BY created_at DESC LIMIT 5",
-            (teacher_id,),
-        )
+        cursor.execute("SELECT course_id, course_name, description, created_at FROM courses WHERE teacher_id=%s ORDER BY created_at DESC LIMIT 5", (teacher_id,))
         recent_courses = cursor.fetchall()
 
         cursor.execute(
@@ -188,12 +176,7 @@ def teacher_dashboard():
         if connection:
             connection.close()
 
-    return render_template(
-        "teacher_dashboard.html",
-        stats=stats,
-        recent_courses=recent_courses,
-        students=students,
-    )
+    return render_template("teacher_dashboard.html", stats=stats, recent_courses=recent_courses, students=students)
 
 @app.route("/teacher/courses", methods=["POST"])
 def create_course():
@@ -211,10 +194,7 @@ def create_course():
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute(
-            "INSERT INTO courses (course_name,description,teacher_id) VALUES (%s,%s,%s)",
-            (course_name, description, session["user_id"]),
-        )
+        cursor.execute("INSERT INTO courses (course_name,description,teacher_id) VALUES (%s,%s,%s)", (course_name, description, session["user_id"]))
         connection.commit()
         return jsonify({"message": "Course created successfully."}), 201
     except Exception:
@@ -226,12 +206,6 @@ def create_course():
             cursor.close()
         if connection:
             connection.close()
-
-@app.route("/parent")
-def parent_dashboard():
-    if session.get("role") != "parent":
-        return redirect(url_for("login_page"))
-    return render_template("parent_dashboard.html")
 
 @app.route("/admin")
 def admin_dashboard():
