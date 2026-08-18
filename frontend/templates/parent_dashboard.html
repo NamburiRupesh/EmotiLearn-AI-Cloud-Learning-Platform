@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmotiLearn | Parent Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="glass-card dashboard-card">
+    <span class="section-label">PARENT PORTAL</span>
+    <h1>Welcome, {{ session.get('name', 'Parent') }}</h1>
+    <p>Stay connected with your student's learning journey.</p>
+    <div class="dashboard-grid">
+        <div class="feature-card"><h3>Attendance</h3><p>View attendance information across enrolled courses.</p></div>
+        <div class="feature-card"><h3>Academic Performance</h3><p>Review marks, quiz results and overall progress.</p></div>
+        <div class="feature-card"><h3>Course Progress</h3><p>See the student's progress across courses and lectures.</p></div>
+        <div class="feature-card"><h3>Assignments</h3><p>View assignment status and upcoming academic work.</p></div>
+        <div class="feature-card"><h3>Learning Overview</h3><p>Get a simple summary of the student's learning activity.</p></div>
+        <div class="feature-card"><h3>Engagement Insights</h3><p>Future AI features can provide high-level emotion-aware learning insights.</p></div>
+    </div>
+    <div class="hero-actions">
+        <a class="secondary-btn" href="/">Home</a>
+        <form action="/auth/logout" method="post"><button type="submit">Logout</button></form>
+    </div>
+</div>
+</body>
+</html>
