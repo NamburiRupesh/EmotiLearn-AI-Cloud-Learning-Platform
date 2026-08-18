@@ -3,196 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EmotiLearn | AI-Powered Cloud Learning Platform</title>
+    <title>EmotiLearn | Emotion-Aware Cloud Learning</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body>
+<body class="home-page">
 
-<header class="glass-card">
-    <div>
-        <h2>EmotiLearn</h2>
-        <p>AI-Powered Cloud Learning Platform</p>
-    </div>
-    <nav>
+<header class="top-nav">
+    <a class="brand" href="/">
+        <span class="brand-mark">E</span>
+        <span>EmotiLearn</span>
+    </a>
+
+    <nav class="nav-links">
         <a href="#features">Features</a>
-        <a href="#how-it-works">How It Works</a>
+        <a href="#how-it-works">How it works</a>
         <a href="#portals">Portals</a>
         <a href="#about">About</a>
-        <a href="/login"><button>Sign In</button></a>
     </nav>
+
+    <a class="nav-signin" href="/login">Sign In <span>→</span></a>
 </header>
 
 <main>
+    <section class="hero-section">
+        <div class="eyebrow"><span>✦</span> AI-POWERED CLOUD LEARNING PLATFORM</div>
 
-<section class="glass-card">
-    <p>SMART LEARNING • CLOUD • AI</p>
-    <h1>Learning that connects students, teachers and parents.</h1>
-    <p>
-        EmotiLearn is a cloud-based learning management platform that brings
-        courses, lectures, quizzes, assignments, attendance and academic
-        progress into one connected system.
-    </p>
-    <div>
-        <a href="/signup"><button>Get Started</button></a>
-        <a href="/login"><button>Sign In</button></a>
-    </div>
-</section>
+        <h1>
+            Learning becomes <span>smarter</span><br>
+            when every role is connected.
+        </h1>
 
-<section id="features">
-    <div class="glass-card">
-        <p>PLATFORM HIGHLIGHTS</p>
-        <h2>Everything needed for digital learning</h2>
-        <p>One platform for course delivery, academic management and progress tracking.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>Course Management</h3>
-        <p>Teachers can create courses, organize modules, schedule lectures and share learning resources.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>Quizzes & Assessments</h3>
-        <p>Create quizzes, conduct assessments, evaluate objective questions and track scores.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>Assignments</h3>
-        <p>Publish assignments, set deadlines, collect submissions and manage academic work.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>Attendance Tracking</h3>
-        <p>Teachers can record attendance while students and parents can view participation records.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>Performance Analytics</h3>
-        <p>Track marks, quiz performance, course progress and academic activity.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>Cloud-Based Platform</h3>
-        <p>User data, courses and academic records are managed through a centralized cloud-ready backend.</p>
-    </div>
-</section>
-
-<section id="how-it-works">
-    <div class="glass-card">
-        <p>HOW IT WORKS</p>
-        <h2>One platform, three connected experiences</h2>
-        <p>Each portal provides role-specific features while sharing the same backend and database.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>01 • Student</h3>
-        <p>Enroll in courses, attend lectures, access materials, attempt quizzes, submit assignments and monitor progress.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>02 • Teacher</h3>
-        <p>Manage courses, upload content, create quizzes, assign work, record attendance and evaluate students.</p>
-    </div>
-
-    <div class="glass-card">
-        <h3>03 • Parent</h3>
-        <p>View attendance, course progress, academic performance, assignments and assessment results.</p>
-    </div>
-</section>
-
-<section id="portals">
-    <div class="glass-card">
-        <p>USER PORTALS</p>
-        <h2>Built around the people who use it</h2>
-    </div>
-
-    <div class="glass-card">
-        <h3>Student Portal</h3>
-        <ul>
-            <li>My Courses</li>
-            <li>Lectures & Materials</li>
-            <li>Quizzes</li>
-            <li>Assignments</li>
-            <li>Attendance</li>
-            <li>Marks & Progress</li>
-        </ul>
-        <a href="/login"><button>Student Sign In</button></a>
-    </div>
-
-    <div class="glass-card">
-        <h3>Teacher Portal</h3>
-        <ul>
-            <li>Course Management</li>
-            <li>Content Upload</li>
-            <li>Quiz Creation</li>
-            <li>Assignment Management</li>
-            <li>Attendance</li>
-            <li>Student Analytics</li>
-        </ul>
-        <a href="/login"><button>Teacher Sign In</button></a>
-    </div>
-
-    <div class="glass-card">
-        <h3>Parent Portal</h3>
-        <ul>
-            <li>Student Overview</li>
-            <li>Attendance</li>
-            <li>Course Progress</li>
-            <li>Quiz Results</li>
-            <li>Assignment Status</li>
-            <li>Performance Reports</li>
-        </ul>
-        <a href="/login"><button>Parent Sign In</button></a>
-    </div>
-</section>
-
-<section id="about">
-    <div class="glass-card">
-        <p>CLOUD-READY ARCHITECTURE</p>
-        <h2>Designed to grow with the platform</h2>
-        <p>
-            The platform uses a Flask backend, MySQL database and web frontend,
-            with the architecture prepared for future cloud deployment and scalable services.
+        <p class="hero-copy">
+            EmotiLearn brings students, teachers, and parents into one connected learning environment for courses, assessments, attendance, progress tracking, and AI-powered learning support.
         </p>
-        <p>Frontend → Flask Backend → MySQL Database → Cloud Deployment</p>
-    </div>
 
-    <div class="glass-card">
-        <h3>Why EmotiLearn?</h3>
-        <p>
-            EmotiLearn brings course content, assessments, attendance and communication
-            together so students, teachers and parents can work from one connected platform.
-        </p>
-    </div>
-</section>
+        <div class="hero-actions">
+            <a class="primary-btn" href="/signup">Get Started <span>→</span></a>
+            <a class="secondary-btn" href="/login">Sign In</a>
+        </div>
 
-<section>
-    <div class="glass-card">
-        <p>COMING NEXT</p>
-        <h2>AI-Powered Emotion-Aware Learning</h2>
-        <p>
-            The management platform will later be extended with a separate AI layer for
-            facial-expression based emotion detection, emotion timelines, personalized
-            recommendations and teacher analytics.
-        </p>
-    </div>
-</section>
+        <div class="hero-note">One platform · Three portals · One connected learning journey</div>
+    </section>
 
-<section>
-    <div class="glass-card">
-        <p>START YOUR LEARNING JOURNEY</p>
-        <h2>Everything your learning community needs in one place.</h2>
-        <p>Create an account to explore EmotiLearn or sign in to continue.</p>
-        <a href="/signup"><button>Get Started</button></a>
-        <a href="/login"><button>Sign In</button></a>
-    </div>
-</section>
+    <section id="features" class="feature-grid-section">
+        <article class="feature-card">
+            <div class="feature-icon">◉</div>
+            <h3>Complete Learning Management</h3>
+            <p>Courses, lectures, notes, quizzes, assignments, attendance, and academic progress in one platform.</p>
+        </article>
 
+        <article class="feature-card">
+            <div class="feature-icon">✦</div>
+            <h3>Personalized Learning</h3>
+            <p>Learning experiences can be extended with intelligent recommendations based on student activity and progress.</p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">⌁</div>
+            <h3>Cloud Connected</h3>
+            <p>A centralized backend and database keep academic information connected and ready for cloud deployment.</p>
+        </article>
+    </section>
+
+    <section class="dark-feature">
+        <div>
+            <span class="section-label">THE EMOTILEARN EXPERIENCE</span>
+            <h2>Everything your learning community needs, without the clutter.</h2>
+            <p>Designed around the everyday workflow of students, teachers, and parents.</p>
+        </div>
+        <a class="light-btn" href="#portals">Explore Platform <span>→</span></a>
+    </section>
+
+    <section id="how-it-works" class="simple-section">
+        <div class="section-heading">
+            <span class="section-label">HOW IT WORKS</span>
+            <h2>A connected academic workflow</h2>
+            <p>Each portal has a focused experience while sharing the same backend and database.</p>
+        </div>
+
+        <div class="workflow-row">
+            <div class="workflow-step">
+                <span>01</span>
+                <h3>Student</h3>
+                <p>Enroll in courses, attend lectures, take quizzes, submit assignments, and track progress.</p>
+            </div>
+            <div class="workflow-line"></div>
+            <div class="workflow-step">
+                <span>02</span>
+                <h3>Teacher</h3>
+                <p>Create courses, publish content, conduct assessments, manage attendance, and review results.</p>
+            </div>
+            <div class="workflow-line"></div>
+            <div class="workflow-step">
+                <span>03</span>
+                <h3>Parent</h3>
+                <p>Follow attendance, academic progress, assessment results, and learning activity.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="portals" class="portal-section">
+        <div class="section-heading">
+            <span class="section-label">USER PORTALS</span>
+            <h2>Built for every member of the learning journey.</h2>
+        </div>
+
+        <div class="portal-grid">
+            <article class="portal-card">
+                <span class="portal-number">01</span>
+                <h3>Student Portal</h3>
+                <p>Learn, practice, submit, and monitor your academic progress.</p>
+                <a href="/login">Student Sign In →</a>
+            </article>
+
+            <article class="portal-card portal-dark">
+                <span class="portal-number">02</span>
+                <h3>Teacher Portal</h3>
+                <p>Manage courses, assessments, attendance, students, and reports.</p>
+                <a href="/login">Teacher Sign In →</a>
+            </article>
+
+            <article class="portal-card">
+                <span class="portal-number">03</span>
+                <h3>Parent Portal</h3>
+                <p>Stay updated on attendance, performance, progress, and assignments.</p>
+                <a href="/login">Parent Sign In →</a>
+            </article>
+        </div>
+    </section>
+
+    <section id="about" class="metrics-section">
+        <div class="metrics-copy">
+            <span class="section-label">WHY EMOTILEARN</span>
+            <h2>Simple at the front. Powerful underneath.</h2>
+            <p>We are building the platform in layers: a dependable learning management system first, followed by the AI emotion-aware layer.</p>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-item"><strong>3</strong><span>Connected portals</span></div>
+            <div class="metric-item"><strong>1</strong><span>Centralized database</span></div>
+            <div class="metric-item"><strong>24/7</strong><span>Cloud-ready architecture</span></div>
+        </div>
+    </section>
+
+    <section class="ai-preview">
+        <div>
+            <span class="section-label">COMING NEXT</span>
+            <h2>AI Emotion-Aware Learning</h2>
+            <p>The core platform will later be extended with YOLO-based facial-expression detection, emotion timelines, smart learning recommendations, and teacher emotion analytics.</p>
+        </div>
+        <div class="ai-chip">AI LAYER · COMING SOON</div>
+    </section>
+
+    <section class="final-cta">
+        <span class="section-label">START WITH EMOTILEARN</span>
+        <h2>Build a better learning experience from one connected platform.</h2>
+        <div class="hero-actions">
+            <a class="primary-btn" href="/signup">Create Account <span>→</span></a>
+            <a class="secondary-btn" href="/login">Sign In</a>
+        </div>
+    </section>
 </main>
 
-<footer class="glass-card">
-    <h3>EmotiLearn</h3>
-    <p>AI-Powered Emotion-Aware Cloud Learning Platform</p>
-    <p>Student • Teacher • Parent</p>
+<footer class="site-footer">
+    <div>
+        <strong>EmotiLearn</strong>
+        <span>AI-Powered Emotion-Aware Cloud Learning Platform</span>
+    </div>
+    <span>Student · Teacher · Parent</span>
 </footer>
 
 </body>
