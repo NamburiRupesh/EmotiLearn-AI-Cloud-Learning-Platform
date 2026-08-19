@@ -76,6 +76,44 @@ def student_dashboard():
         if connection: connection.close()
     return render_template("student_dashboard.html", enrolled_courses=enrolled_courses, available_courses=available_courses)
 
+@app.route("/student/courses/<int:course_id>")
+def student_course(course_id):
+    if session.get("role") != "student":
+        return redirect(url_for("login_page"))
+
+    connection = cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        student_id = session["user_id"]
+
+        cursor.execute("""
+            SELECT c.course_id, c.course_name, c.description, u.name AS teacher_name
+            FROM courses c
+            INNER JOIN users u ON u.user_id = c.teacher_id
+            INNER JOIN enrollments e ON e.course_id = c.course_id
+            WHERE c.course_id=%s AND e.student_id=%s
+        """, (course_id, student_id))
+        course = cursor.fetchone()
+
+        if not course:
+            return redirect(url_for("student_dashboard"))
+
+        cursor.execute("""
+            SELECT lecture_id, title, video_url, notes_url
+            FROM lectures
+            WHERE course_id=%s
+            ORDER BY lecture_id ASC
+        """, (course_id,))
+        lectures = cursor.fetchall()
+
+        return render_template("student_course.html", course=course, lectures=lectures)
+    except Exception:
+        return redirect(url_for("student_dashboard"))
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
+
 @app.route("/student/courses/<int:course_id>/join", methods=["POST"])
 def join_course(course_id):
     if session.get("role") != "student":
