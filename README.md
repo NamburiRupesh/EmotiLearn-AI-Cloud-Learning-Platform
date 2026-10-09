@@ -213,20 +213,49 @@ emotilearn_env\Scripts\activate
 pip install -r backend\requirements.txt
 ```
 
-### 4. Configure MySQL
+### 3. Install dependencies
 
-Create the database in MySQL Workbench:
-
-```sql
-CREATE DATABASE emotilearn_db;
-USE emotilearn_db;
+```powershell
+pip install -r backend\requirements.txt
 ```
 
-Create the project's required tables before running the application.
+### 4. Configure Database (Cloud MySQL or Local MySQL)
 
-The application currently uses a local MySQL database through `backend/database.py`.
+#### Option A: Free Cloud MySQL (Recommended: TiDB Cloud Serverless or Aiven)
+1. **Create a Free Database**:
+   - Go to [TiDB Cloud](https://tidbcloud.com) or [Aiven](https://aiven.io) and create a free MySQL database cluster.
+2. **Execute the Database Schema**:
+   - In your cloud provider's web SQL console, copy and run the contents of [`database/emotilearn_db.sql`](database/emotilearn_db.sql) to create all 11 required tables and indexes.
+3. **Configure Environment Variables**:
+   - Copy `.env.example` to `.env`:
+     ```powershell
+     copy .env.example .env
+     ```
+   - Provide your cloud credentials or `DATABASE_URL` in `.env`:
+     ```env
+     # Option 1: Full URL
+     DATABASE_URL=mysql://<user>:<password>@<cloud-host>:<port>/<dbname>?ssl=true
 
-### 5. Run the application
+     # OR Option 2: Individual variables
+     MYSQL_HOST=<cloud-host>
+     MYSQL_PORT=<cloud-port>
+     MYSQL_USER=<user>
+     MYSQL_PASSWORD=<password>
+     MYSQL_DATABASE=<dbname>
+     MYSQL_SSL=true
+     SECRET_KEY=your-secure-random-secret
+     ```
+4. **Test the Connection**:
+   ```powershell
+   python backend\database.py
+   ```
+
+#### Option B: Local MySQL
+- Create `emotilearn_db` in MySQL / MySQL Workbench.
+- Run [`database/emotilearn_db.sql`](database/emotilearn_db.sql).
+- Set `MYSQL_PASSWORD` and `MYSQL_SSL=false` in `.env`.
+
+### 5. Run the Application
 
 ```powershell
 python backend\app.py
@@ -237,6 +266,17 @@ Open:
 ```text
 http://127.0.0.1:5000
 ```
+
+### 6. Cloud Deployment
+
+EmotiLearn is cloud-ready and can be deployed anywhere:
+- **Render / Railway / Heroku**: Use the included `Procfile` (`web: gunicorn --chdir backend app:app`). Connect your GitHub repo, set your environment variables (`DATABASE_URL`, `SECRET_KEY`), and deploy.
+- **Docker / GCP Cloud Run / AWS App Runner**: Build and run the included `Dockerfile`:
+  ```bash
+  docker build -t emotilearn .
+  docker run -p 5000:5000 --env-file .env emotilearn
+  ```
+
 
 ## Current Development Status
 

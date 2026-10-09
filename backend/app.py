@@ -8,7 +8,11 @@ from database import get_db_connection
 
 load_dotenv()
 
-app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "frontend", "templates"))
+STATIC_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "frontend", "static"))
+
+app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-this-secret-key")
 CORS(app)
 app.register_blueprint(auth, url_prefix="/auth")
@@ -248,4 +252,6 @@ def admin_dashboard():
     return render_template("admin_dashboard.html")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.getenv("PORT", 5000))
+    debug = os.getenv("FLASK_DEBUG", "true").lower() in ("true", "1", "t")
+    app.run(host="0.0.0.0", port=port, debug=debug)

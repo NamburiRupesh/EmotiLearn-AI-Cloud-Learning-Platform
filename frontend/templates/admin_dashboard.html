@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EmotiLearn | Admin Dashboard</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.admin-app{min-height:100vh;background:#f6f8fc;color:#18202d;display:flex}
+.admin-sidebar{width:240px;position:fixed;inset:0 auto 0 0;background:#fff;border-right:1px solid #e4e8f0;padding:24px 18px;display:flex;flex-direction:column}
+.admin-brand{font-weight:900;font-size:20px;margin:4px 8px 34px;display:flex;align-items:center;gap:10px}
+.brand-mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#7168f4,#19b9ae);color:#fff}
+.admin-nav{display:grid;gap:6px}
+.admin-nav a{padding:12px 13px;border-radius:11px;color:#687286;font-size:13px;font-weight:800}
+.admin-nav a.active,.admin-nav a:hover{background:#eef0ff;color:#554ad7}
+.admin-bottom{margin-top:auto}
+.admin-mini{padding:13px;border:1px solid #e7eaf1;border-radius:13px;background:#fafbfe;margin-bottom:10px}
+.admin-mini strong{display:block;font-size:13px}
+.admin-mini span{font-size:11px;color:#8791a2}
+.logout{width:100%;padding:11px;border:1px solid #e1e5ed;background:#fff;border-radius:10px;font-weight:800;cursor:pointer}
+.admin-main{margin-left:240px;width:calc(100% - 240px);padding:30px 34px}
+.admin-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.admin-top small{font-size:10px;letter-spacing:.12em;font-weight:900;color:#7a8394}
+.admin-top h1{font-size:32px;margin-top:7px;letter-spacing:-.04em}
+.admin-top p{margin-top:5px;color:#747e90;font-size:14px}
+.panel{background:#fff;border:1px solid #e1e6ee;border-radius:18px;padding:22px;box-shadow:0 10px 25px rgba(54,66,90,.04);margin-bottom:18px}
+.badge{padding:6px 10px;border-radius:999px;background:#eef0ff;color:#554ad7;font-size:11px;font-weight:800}
+@media(max-width:768px){.admin-app{display:block}.admin-sidebar{position:static;width:100%}.admin-main{margin:0;width:100%;padding:20px 16px}}
+</style>
+</head>
+<body>
+<div class="admin-app">
+    <aside class="admin-sidebar">
+        <div class="admin-brand"><span class="brand-mark">E</span>EmotiLearn</div>
+        <nav class="admin-nav">
+            <a class="active" href="/admin">System Overview</a>
+            <a href="/teacher">Teacher View</a>
+            <a href="/student">Student View</a>
+        </nav>
+        <div class="admin-bottom">
+            <div class="admin-mini">
+                <strong>{{ session.get('name', 'Administrator') }}</strong>
+                <span>Admin Account</span>
+            </div>
+            <form action="/auth/logout" method="post">
+                <button class="logout" type="submit">Logout</button>
+            </form>
+        </div>
+    </aside>
+    <main class="admin-main">
+        <header class="admin-top">
+            <div>
+                <small>ADMINISTRATION CONSOLE</small>
+                <h1>Welcome, {{ session.get('name', 'Admin') }}.</h1>
+                <p>System status, user management, and cloud platform configuration.</p>
+            </div>
+            <span class="badge">Cloud Online</span>
+        </header>
+
+        <section class="panel">
+            <h2>Cloud Infrastructure Status</h2>
+            <p style="color:#687286;font-size:13px;line-height:1.6;margin-top:8px">
+                EmotiLearn is configured with cloud MySQL integration, role-based security, and extensible student/teacher workspaces.
+            </p>
+        </section>
+    </main>
+</div>
+</body>
+</html>
