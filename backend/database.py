@@ -7,11 +7,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_db_config():
-    """Build a MySQL connection configuration dictionary supporting
+def _clean_val(val, default=""):
+    """Strip quotes and whitespace from env values."""
+    if val is None:
+        return default
+    s = str(val).strip()
+    if (s.startswith("'") and s.endswith("'")) or (s.startswith('"') and s.endswith('"')):
+        s = s[1:-1].strip()
+    return s
 
-    both DATABASE_URL connection strings and individual environment
-    variables.
+
+def get_db_config():
+    """Build a MySQL connection configuration dictionary supporting:
+    - DATABASE_URL / MYSQL_URL connection strings
+    - MYSQL_* environment variables
+    - DB_* environment variables (standard TiDB/Cloud export)
     """
     database_url = os.getenv("DATABASE_URL") or os.getenv("MYSQL_URL")
 
@@ -24,7 +34,6 @@ def get_db_config():
             "password": unquote(parsed.password) if parsed.password else "",
             "database": parsed.path.lstrip("/") if parsed.path else "emotilearn_db",
         }
-        # Check query params for SSL or enable SSL by default for remote hosts
         query_str = (parsed.query or "").lower()
         if "ssl=false" in query_str or "ssl_mode=disabled" in query_str:
             config["ssl_disabled"] = True
@@ -32,20 +41,22 @@ def get_db_config():
             config["ssl_disabled"] = False
         return config
 
-    host = os.getenv("MYSQL_HOST", "localhost").strip()
-    port = int(os.getenv("MYSQL_PORT", 3306))
-    user = os.getenv("MYSQL_USER", "root").strip()
-    password = os.getenv("MYSQL_PASSWORD", "").strip()
-    database = os.getenv("MYSQL_DATABASE", "emotilearn_db").strip()
+    # Support both MYSQL_* and DB_* variable names
+    host = _clean_val(os.getenv("MYSQL_HOST") or os.getenv("DB_HOST"), "localhost")
+    port_val = _clean_val(os.getenv("MYSQL_PORT") or os.getenv("DB_PORT"), "3306")
+    port = int(port_val) if port_val.isdigit() else 3306
+    user = _clean_val(os.getenv("MYSQL_USER") or os.getenv("DB_USERNAME") or os.getenv("DB_USER"), "root")
+    password = _clean_val(os.getenv("MYSQL_PASSWORD") or os.getenv("DB_PASSWORD"), "")
+    database = _clean_val(os.getenv("MYSQL_DATABASE") or os.getenv("DB_DATABASE"), "emotilearn_db")
 
     # SSL configuration: Default to True if remote cloud host or if explicitly requested
-    ssl_env = os.getenv("MYSQL_SSL", "").strip().lower()
+    ssl_env = _clean_val(os.getenv("MYSQL_SSL") or os.getenv("DB_SSL"), "").lower()
     if ssl_env in ("false", "0", "no"):
         ssl_disabled = True
     elif ssl_env in ("true", "1", "yes"):
         ssl_disabled = False
     else:
-        # Auto-detect: if not connecting to localhost, enable SSL for cloud providers
+        # Auto-detect: if connecting to a remote host (e.g. tidbcloud, aiven, aws), enable SSL
         ssl_disabled = host in ("localhost", "127.0.0.1")
 
     config = {
@@ -66,7 +77,6 @@ def get_db_config():
 
 def get_db_connection():
     """Create and return a new MySQL connection.
-
     Automatically handles cloud SSL, custom ports, and timeouts.
     """
     config = get_db_config()
